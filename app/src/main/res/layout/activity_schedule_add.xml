@@ -18,12 +18,11 @@
             android:id="@+id/add_schedule"
             android:layout_width="348dp"
             android:layout_height="177dp"
+            android:layout_below="@+id/schedule"
+            android:layout_centerHorizontal="true"
             android:inputType="textMultiLine"
             android:selectAllOnFocus="false"
-            android:layout_below="@+id/schedule"
-            android:text="예시)약국가기"
-            android:layout_centerHorizontal="true"
-            />
+            android:text="예시)약국가기" />
 
         <TextView
             android:id="@+id/schedule"
@@ -38,10 +37,9 @@
             android:layout_width="192dp"
             android:layout_height="wrap_content"
             android:layout_below="@+id/add_location"
-            android:layout_marginTop="20dp"
-            android:text="            알람 설정"
             android:layout_centerHorizontal="true"
-            />
+            android:layout_marginTop="20dp"
+            android:text="            알람 설정" />
 
         <Button
             android:id="@+id/add_location"
@@ -52,6 +50,13 @@
             android:text="장소 추가"
             android:layout_centerHorizontal="true"/>
 
+        <TextView
+            android:id="@+id/location_view"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:text="잇음"
+            android:layout_below="@+id/check_alarm"
+            />
 
         <LinearLayout
             android:layout_width="match_parent"
