@@ -32,6 +32,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
   MapFragment mapFragment;
   public static double Glatitude;
   public static double Glongtitude;
+    LocationManager manager;
+    GPSListener gpsListener;
 
     protected void onCreate(Bundle savedInstanceState) {
         Glatitude=0;
@@ -74,10 +76,10 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
     public void startLocationService() {
         // 위치 관리자 객체 참조
-        LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
         // 위치 정보를 받을 리스너 생성
-        GPSListener gpsListener = new GPSListener();
+        gpsListener = new GPSListener();
         long minTime = 10000;
         float minDistance = 0;
         if ( Build.VERSION.SDK_INT >= 23 &&
@@ -117,6 +119,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 // 더블로 롱티듀드 래티듀드 받아옴
                 //mapFragment.onStop();
                 Toast.makeText(this, "제대로", Toast.LENGTH_SHORT).show();
+                manager.removeUpdates(gpsListener);
                 super.onStop();
                 finish();
                 break;
