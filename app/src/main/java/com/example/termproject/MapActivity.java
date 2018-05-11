@@ -1,5 +1,7 @@
 package com.example.termproject;
 
+
+
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -11,27 +13,41 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 
+public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, Button.OnClickListener {
 
-
-public class MapActivity extends AppCompatActivity implements OnMapReadyCallback {
-    GoogleMap googleMap;
+  GoogleMap googleMap;
+  Button LocationInputBtn;
+  MapFragment mapFragment;
+  public static double Glatitude;
+  public static double Glongtitude;
 
     protected void onCreate(Bundle savedInstanceState) {
+        Glatitude=0;
+        Glongtitude=0;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
+        LocationInputBtn=(Button) findViewById(R.id.location_input_button);
+        LocationInputBtn.setOnClickListener(this);
+
+        mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
+
         startLocationService();
     }
 
@@ -55,10 +71,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             googleMap.setBuildingsEnabled(true);
             googleMap.getUiSettings().setZoomControlsEnabled(true);
         }
-
     }
-
-
     public void startLocationService() {
         // 위치 관리자 객체 참조
         LocationManager manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -67,11 +80,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         GPSListener gpsListener = new GPSListener();
         long minTime = 10000;
         float minDistance = 0;
-       /* if ( Build.VERSION.SDK_INT >= 23 &&
+        if ( Build.VERSION.SDK_INT >= 23 &&
                 ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
             ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
                     0 );
-        }*/
+        }
         try {
             // GPS를 이용한 위치 요청
             manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
@@ -95,6 +108,27 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
     }
 
+    @Override
+    public void onClick(View view) {
+        switch (view.getId())
+        {
+            case R.id.location_input_button :
+                // 버튼누르겨 화면 끄고 나서
+                // 더블로 롱티듀드 래티듀드 받아옴
+                //mapFragment.onStop();
+                Toast.makeText(this, "제대로", Toast.LENGTH_SHORT).show();
+                super.onStop();
+                finish();
+                break;
+            default:
+                Toast.makeText(this, "나머지", Toast.LENGTH_SHORT).show();
+                finish();
+                break;
+
+        }
+        return;
+    }
+
     public class GPSListener implements LocationListener {
         //위치 정보가 확인될 때 자동 호출되는 메소드
 
@@ -103,7 +137,9 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             Double longitude = location.getLongitude();
 
             String msg = "Latitude : " + latitude + "\nLongitude:" + longitude;
-            Log.v("GPSListener", msg);
+            //Log.v("GPSListener", msg);
+            Glatitude=latitude;
+            Glongtitude=longitude;
             Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
             showCurrentlocation(latitude, longitude);
         }
@@ -126,6 +162,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
 
+
+        //마커추가
+       MarkerOptions optFirst = new MarkerOptions();
+        optFirst.position(curPoint);// 위도 • 경도
+        optFirst.title("Current Position");// 제목 미리보기
+        optFirst.snippet("Snippet");
+        //optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_back));
+        googleMap.addMarker(optFirst).showInfoWindow();
+
+
     }
 
     public void onResume() {
@@ -147,5 +193,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     }
+    }
 
-}
+

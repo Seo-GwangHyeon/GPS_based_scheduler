@@ -21,7 +21,9 @@ public class DBHelper extends SQLiteOpenHelper {
         String sql="create table if not exists schedule(" +
                 "_id integer primary key autoincrement, " +
                 "content text," +
-                " address text);";
+                "address text,"+
+                "latitude double,"+
+                "longtitude double);";
 
         db.execSQL(sql);
     }

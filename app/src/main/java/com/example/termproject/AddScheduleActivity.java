@@ -47,6 +47,9 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
                 ContentValues values=new ContentValues();
                 values.put("content", String.valueOf(SchedultText.getText()));
                 values.put("address","부산시");
+                values.put("latitude", MapActivity.Glatitude);
+                values.put("longtitude", MapActivity.Glongtitude);
+
 
                 MainActivity.db.insert("schedule",null,values);
 
@@ -58,8 +61,10 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
 
                 MainActivity.list.setAdapter(MainActivity.adapter);
 
+                Log.v("lcation", (String) values.get("latitude"));
 
                 Toast.makeText(this, String.valueOf(SchedultText.getText())+"저장됨", Toast.LENGTH_SHORT).show();
+
                 finish();
                 break ;
             case R.id.cancel :

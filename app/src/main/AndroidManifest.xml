@@ -67,9 +67,9 @@
         </activity>
         <activity
             android:name=".MapActivity"
-            android:label="위치 기반 스케줄러"
-            android:theme="@style/AppTheme.NoActionBar2"
-            >
+            android:label="위치 기반 스케줄러">
+            <!--android:theme="@style/AppTheme.NoActionBar2"-->
+
         </activity>
     </application>
 
