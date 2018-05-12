@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity
         helper = new DBHelper(MainActivity.this,"schedule.db",null,1);
         Cursor c = db.query("schedule",null,null,null,null,null,null,null);
         adapter = new SimpleCursorAdapter(MainActivity.this, android.R.layout.simple_list_item_2, c,
-                new String[] {"content","address"} , new int[] {android.R.id.text1, android.R.id.text2},0);
+                new String[] {"content","latitude"} , new int[] {android.R.id.text1, android.R.id.text2},0);
         list.setAdapter(adapter);
 
         //여기까지 로딩부분

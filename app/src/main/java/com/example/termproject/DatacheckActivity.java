@@ -69,7 +69,7 @@ public class DatacheckActivity extends AppCompatActivity {
                 MainActivity.helper = new DBHelper(DatacheckActivity.this,"schedule.db",null,1);
                 Cursor c = MainActivity.db.query("schedule",null,null,null,null,null,null,null);
                 MainActivity.adapter = new SimpleCursorAdapter(DatacheckActivity.this, android.R.layout.simple_list_item_2, c,
-                        new String[] {"content","address"} , new int[] {android.R.id.text1, android.R.id.text2},0);
+                        new String[] {"content","latitude"} , new int[] {android.R.id.text1, android.R.id.text2},0);
                 MainActivity.list.setAdapter(MainActivity.adapter);
                 finish();
                 Toast.makeText(DatacheckActivity.this, "삭제됨", Toast.LENGTH_SHORT).show();

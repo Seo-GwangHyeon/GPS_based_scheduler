@@ -51,17 +51,21 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
                 values.put("longtitude", MapActivity.Glongtitude);
 
 
+                Log.v("addlocation","value에 넣기");
+
                 MainActivity.db.insert("schedule",null,values);
 
+                Log.v("addlocation","value를 insert");
                 //세팅부
                 MainActivity.helper = new DBHelper(AddScheduleActivity.this,"schedule.db",null,1);
                 Cursor c = MainActivity.db.query("schedule",null,null,null,null,null,null,null);
                 MainActivity.adapter = new SimpleCursorAdapter(AddScheduleActivity.this, android.R.layout.simple_list_item_2, c,
-                        new String[] {"content","address"} , new int[] {android.R.id.text1, android.R.id.text2},0);
+                        new String[] {"content","latitude"} , new int[] {android.R.id.text1, android.R.id.text2},0);
 
                 MainActivity.list.setAdapter(MainActivity.adapter);
 
-                Log.v("lcation", (String) values.get("latitude"));
+                //Log.v("location", (String) values.get("latitude"));
+                Log.v("addlocation","세팅도 됨");
 
                 Toast.makeText(this, String.valueOf(SchedultText.getText())+"저장됨", Toast.LENGTH_SHORT).show();
 
