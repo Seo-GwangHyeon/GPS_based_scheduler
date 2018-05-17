@@ -26,6 +26,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     GPSListener gpsListener;
 
     protected void onCreate(Bundle savedInstanceState) {
+
         Glatitude=0;
         Glongtitude=0;
 
@@ -34,19 +35,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         LocationInputBtn=(Button) findViewById(R.id.location_input_button);
         LocationInputBtn.setOnClickListener(this);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+       if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},0);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},0);
+
         }
+        else {
 
-        mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.map);
+           mapFragment = (MapFragment) getFragmentManager()
+                    .findFragmentById(R.id.map);
 
-        mapFragment.getMapAsync(this);
+            mapFragment.getMapAsync(this);
 
-        startLocationService();
-
+            startLocationService();
+        }
     }
 
 
@@ -60,11 +63,15 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     public void setUpMap() {
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     0);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     0);
+
+        }
+        else {
             googleMap.setMyLocationEnabled(true);
             googleMap.setTrafficEnabled(true);
             googleMap.setIndoorEnabled(true);
@@ -81,32 +88,34 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         long minTime = 10000;
         float minDistance = 0;
         if ( Build.VERSION.SDK_INT >= 23 &&
-                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
+                ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED )
+        {
             ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
                     0 );
 
         }
-        try {
-            // GPS를 이용한 위치 요청
-            manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    minTime, minDistance, gpsListener);
+        else {
+            try {
+                // GPS를 이용한 위치 요청
+                manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        minTime, minDistance, gpsListener);
 
-            // 네트워크를 이용한 위치 요청
-            manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
-                    minTime, minDistance, gpsListener);
-            // 위치 확인이 안되는 경우에도 최근에 확인된 위치 정보 먼저 확인
-            Location lastLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-            if (lastLocation != null) {
-                Double latitude = lastLocation.getLatitude();
-                Double longitude = lastLocation.getLongitude();
+                // 네트워크를 이용한 위치 요청
+                manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
+                        minTime, minDistance, gpsListener);
+                // 위치 확인이 안되는 경우에도 최근에 확인된 위치 정보 먼저 확인
+                Location lastLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (lastLocation != null) {
+                    Double latitude = lastLocation.getLatitude();
+                    Double longitude = lastLocation.getLongitude();
 
+                }
+            } catch (SecurityException ex) {
+                ex.printStackTrace();
             }
-        } catch (SecurityException ex) {
-            ex.printStackTrace();
+
+            //   Toast.makeText(getApplicationContext(), "위치 확인이 시작되었습니다. 로그를 확인하세요.", Toast.LENGTH_SHORT).show();
         }
-
-        //   Toast.makeText(getApplicationContext(), "위치 확인이 시작되었습니다. 로그를 확인하세요.", Toast.LENGTH_SHORT).show();
-
     }
 
     @Override
@@ -181,15 +190,18 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     0);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},0);
             googleMap.setMyLocationEnabled(true);
         }
     }
 
     public void onPause() {
         super.onPause();
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     0);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},0);
             googleMap.setMyLocationEnabled(false);
         }
 
