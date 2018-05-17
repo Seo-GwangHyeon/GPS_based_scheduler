@@ -1,27 +1,17 @@
 package com.example.termproject;
 
-
-
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationListener;
-import android.location.LocationManager;
+import android.location.*;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -44,6 +34,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         LocationInputBtn=(Button) findViewById(R.id.location_input_button);
         LocationInputBtn.setOnClickListener(this);
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},0);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},0);
+        }
 
         mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
@@ -51,12 +46,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapFragment.getMapAsync(this);
 
         startLocationService();
+
     }
 
 
     public void onMapReady(GoogleMap map) {
         googleMap = map;
-        Toast.makeText(this, "set map", Toast.LENGTH_SHORT).show();
+       // Toast.makeText(this, "set map", Toast.LENGTH_SHORT).show();
         setUpMap();
 
     }
@@ -66,6 +62,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    0);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
                     0);
             googleMap.setMyLocationEnabled(true);
             googleMap.setTrafficEnabled(true);
@@ -86,6 +84,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 ContextCompat.checkSelfPermission( this, android.Manifest.permission.ACCESS_FINE_LOCATION ) != PackageManager.PERMISSION_GRANTED ) {
             ActivityCompat.requestPermissions( this, new String[] {  android.Manifest.permission.ACCESS_FINE_LOCATION  },
                     0 );
+
         }
         try {
             // GPS를 이용한 위치 요청
@@ -118,7 +117,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 // 버튼누르겨 화면 끄고 나서
                 // 더블로 롱티듀드 래티듀드 받아옴
                 //mapFragment.onStop();
-                Toast.makeText(this, "제대로", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(this, "제대로", Toast.LENGTH_SHORT).show();
                 manager.removeUpdates(gpsListener);
                 super.onStop();
                 finish();
@@ -169,7 +168,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //마커추가
        MarkerOptions optFirst = new MarkerOptions();
         optFirst.position(curPoint);// 위도 • 경도
-        optFirst.title("Current Position");// 제목 미리보기
+        optFirst.title("현재 위치");// 제목 미리보기
         optFirst.snippet("Snippet");
         //optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_back));
         googleMap.addMarker(optFirst).showInfoWindow();
@@ -196,6 +195,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     }
-    }
+}
 
 
