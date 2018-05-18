@@ -14,10 +14,13 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.List;
+
+import javax.microedition.khronos.opengles.GL;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, Button.OnClickListener {
 
@@ -35,10 +38,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     int mark_count;
     EditText AddressInput;
     Button SearchButton;
+    int gpsEnable;
+    Marker temp;
     protected void onCreate(Bundle savedInstanceState) {
 
         Glatitude=0;
         Glongtitude=0;
+        gpsEnable=1;
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         mark_count=0;
@@ -93,6 +100,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                         minTime, minDistance, gpsListener);
                 // 위치 확인이 안되는 경우에도 최근에 확인된 위치 정보 먼저 확인
+
                  lastLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (lastLocation != null) {
                     Double latitude = lastLocation.getLatitude();
@@ -134,15 +142,22 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         //위치 정보가 확인될 때 자동 호출되는 메소드
 
         public void onLocationChanged(Location location) {
-            Double latitude = location.getLatitude();
-            Double longitude = location.getLongitude();
+            if(gpsEnable==1) {
+                Double latitude = location.getLatitude();
+                Double longitude = location.getLongitude();
 
-            String msg = "Latitude : " + latitude + "\nLongitude:" + longitude;
-            //Log.v("GPSListener", msg);
-            Glatitude=latitude;
-            Glongtitude=longitude;
-            Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-            showCurrentlocation(latitude, longitude);
+                String msg = "Latitude : " + latitude + "\nLongitude:" + longitude;
+                //Log.v("GPSListener", msg);
+                Glatitude = latitude;
+                Glongtitude = longitude;
+                Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+                showCurrentlocation(latitude, longitude);
+                gpsEnable=0;
+            }
+            else
+            {
+                manager.removeUpdates(gpsListener);
+            }
         }
 
         public void onProviderDisabled(String provider) {
@@ -163,10 +178,26 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 15));
 
         //마커추가
+        List<Address> addressList = null;
+        try {
+            // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
+            addressList =  geocoder.getFromLocation(latitude,longitude, 10); // 최대 검색 결과 개수
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // System.out.println(addressList.get(0).toString());
+        // 콤마를 기준으로 split
+        String []splitStr = addressList.get(0).toString().split(",");
+        String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
+        String feature = addressList.get(0).getFeatureName();
 
         optFirst.position(curPoint);// 위도 • 경도
-        optFirst.title("현재 위치");// 제목 미리보기
-        optFirst.snippet("Snippet");
+        optFirst.title(feature);// 제목 미리보기
+        optFirst.snippet(address);
+        temp=googleMap.addMarker(optFirst);
+        temp.showInfoWindow();
         //optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_back));
 
 
@@ -179,18 +210,19 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         // Toast.makeText(this, "set map", Toast.LENGTH_SHORT).show();
 
         setUpMap();
-        googleMap.addMarker(optFirst).showInfoWindow();
+
         googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
             @Override
             public void onMapClick(LatLng point) {
 
                 // 마커 타이틀
-                Double latitude = point.latitude; // 위도
-                Double longitude = point.longitude; // 경도
+                 Glatitude = point.latitude; // 위도
+                Glongtitude = point.longitude; // 경도
+
                 List<Address> addressList = null;
                 try {
                     // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
-                    addressList =  geocoder.getFromLocation(latitude,longitude, 10); // 최대 검색 결과 개수
+                    addressList =  geocoder.getFromLocation(Glatitude,Glongtitude, 10); // 최대 검색 결과 개수
                 }
                 catch (IOException e) {
                     e.printStackTrace();
@@ -211,11 +243,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 // 마커(핀) 추가
                 //if(optFirst.)
                 //curPoint.
-                googleMap.clear();
-
+                //googleMap.clear();
+                temp.remove();
                 optFirst=tempMark;
                 optFirst.draggable(true);
-                googleMap.addMarker(optFirst).showInfoWindow();
+
+                temp=googleMap.addMarker(optFirst);
+                temp.showInfoWindow();
             }
         });
 
@@ -248,16 +282,21 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 // 좌표(위도, 경도) 생성
                 LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                Glatitude=point.latitude;
+                Glongtitude=point.longitude;
                 // 마커 생성
                 MarkerOptions mOptions2 = new MarkerOptions();
                 mOptions2.title(feature);
                 mOptions2.snippet(address);
                 mOptions2.position(point);
                 // 마커 추가
-                googleMap.clear();
+               // googleMap.clear();
+                temp.remove();
                 optFirst=mOptions2;
                optFirst.draggable(true);
-                googleMap.addMarker(optFirst).showInfoWindow();
+
+                temp= googleMap.addMarker(optFirst);
+                temp.showInfoWindow();
                 // 해당 좌표로 화면 줌
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
             }
