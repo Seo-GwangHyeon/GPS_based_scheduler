@@ -82,6 +82,7 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
                 finish();
                 break ;
             case R.id.add_location :
+
                 Intent intent= new Intent(AddScheduleActivity.this, MapActivity.class);
                 startActivity(intent);
 

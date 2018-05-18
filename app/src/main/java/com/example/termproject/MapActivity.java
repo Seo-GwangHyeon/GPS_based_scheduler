@@ -10,10 +10,14 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
+import java.util.List;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, Button.OnClickListener {
 
@@ -22,20 +26,35 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
   MapFragment mapFragment;
   public static double Glatitude;
   public static double Glongtitude;
+    private Geocoder geocoder;
     LocationManager manager;
     GPSListener gpsListener;
-
+    LatLng curPoint;
+    Location lastLocation;
+    MarkerOptions optFirst;
+    int mark_count;
+    EditText AddressInput;
+    Button SearchButton;
     protected void onCreate(Bundle savedInstanceState) {
 
         Glatitude=0;
         Glongtitude=0;
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
+        mark_count=0;
         LocationInputBtn=(Button) findViewById(R.id.location_input_button);
         LocationInputBtn.setOnClickListener(this);
-       if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+        AddressInput = (EditText) findViewById(R.id.address_text);
+        SearchButton=(Button)findViewById(R.id.search_button);
+        mapFragment = (MapFragment) getFragmentManager()
+                .findFragmentById(R.id.map);
+
+        mapFragment.getMapAsync(this);
+        curPoint=new LatLng(37.555744, 126.970431);
+        optFirst = new MarkerOptions();
+       optFirst.position(curPoint);
+        startLocationService();
+    /*   if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},0);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},0);
@@ -43,48 +62,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         else {
 
-           mapFragment = (MapFragment) getFragmentManager()
-                    .findFragmentById(R.id.map);
 
-            mapFragment.getMapAsync(this);
 
-            startLocationService();
-        }
+        }*/
     }
 
-
-    public void onMapReady(GoogleMap map) {
-        googleMap = map;
-       // Toast.makeText(this, "set map", Toast.LENGTH_SHORT).show();
-        setUpMap();
-
-    }
-
-    public void setUpMap() {
-        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
-        {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                    0);
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
-                    0);
-
-        }
-        else {
-            googleMap.setMyLocationEnabled(true);
-            googleMap.setTrafficEnabled(true);
-            googleMap.setIndoorEnabled(true);
-            googleMap.setBuildingsEnabled(true);
-            googleMap.getUiSettings().setZoomControlsEnabled(true);
-        }
-    }
     public void startLocationService() {
-        // 위치 관리자 객체 참조
-         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
-        // 위치 정보를 받을 리스너 생성
-        gpsListener = new GPSListener();
         long minTime = 10000;
         float minDistance = 0;
         if ( Build.VERSION.SDK_INT >= 23 &&
@@ -96,6 +80,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         else {
             try {
+                // 위치 관리자 객체 참조
+                manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                // 위치 정보를 받을 리스너 생성
+                gpsListener = new GPSListener();
                 // GPS를 이용한 위치 요청
                 manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
                         minTime, minDistance, gpsListener);
@@ -104,10 +93,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 manager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,
                         minTime, minDistance, gpsListener);
                 // 위치 확인이 안되는 경우에도 최근에 확인된 위치 정보 먼저 확인
-                Location lastLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                 lastLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (lastLocation != null) {
                     Double latitude = lastLocation.getLatitude();
                     Double longitude = lastLocation.getLongitude();
+
 
                 }
             } catch (SecurityException ex) {
@@ -159,6 +149,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
 
         public void onProviderEnabled(String provider) {
+
+
         }
 
         public void onStatusChanged(String provider, int status, Bundle extras) {
@@ -167,31 +159,138 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void showCurrentlocation(Double latitude, Double longitude) {
-        LatLng curPoint = new LatLng(latitude, longitude);
-
+         curPoint = new LatLng(latitude, longitude);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 15));
 
-        googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-
-
         //마커추가
-       MarkerOptions optFirst = new MarkerOptions();
+
         optFirst.position(curPoint);// 위도 • 경도
         optFirst.title("현재 위치");// 제목 미리보기
         optFirst.snippet("Snippet");
         //optFirst.icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_action_back));
-        googleMap.addMarker(optFirst).showInfoWindow();
+
 
 
     }
+    public void onMapReady(GoogleMap map) {//맵의 onCreate 쯤된다.
+        startLocationService();
+        googleMap = map;
+        geocoder = new Geocoder(this);
+        // Toast.makeText(this, "set map", Toast.LENGTH_SHORT).show();
 
+        setUpMap();
+        googleMap.addMarker(optFirst).showInfoWindow();
+        googleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener(){
+            @Override
+            public void onMapClick(LatLng point) {
+
+                // 마커 타이틀
+                Double latitude = point.latitude; // 위도
+                Double longitude = point.longitude; // 경도
+                List<Address> addressList = null;
+                try {
+                    // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
+                    addressList =  geocoder.getFromLocation(latitude,longitude, 10); // 최대 검색 결과 개수
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+               // System.out.println(addressList.get(0).toString());
+                // 콤마를 기준으로 split
+                String []splitStr = addressList.get(0).toString().split(",");
+                String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
+                String feature = addressList.get(0).getFeatureName();
+
+                MarkerOptions tempMark=new MarkerOptions();
+                tempMark.title(feature);
+                // 마커의 스니펫(간단한 텍스트) 설정
+                tempMark.snippet(address);
+                // LatLng: 위도 경도 쌍을 나타냄
+                tempMark.position(point);
+                // 마커(핀) 추가
+                //if(optFirst.)
+                //curPoint.
+                googleMap.clear();
+
+                optFirst=tempMark;
+                optFirst.draggable(true);
+                googleMap.addMarker(optFirst).showInfoWindow();
+            }
+        });
+
+        SearchButton.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                String str=AddressInput.getText().toString();
+                List<Address> addressList = null;
+                try {
+                    // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
+                    addressList = geocoder.getFromLocationName(
+                            str, // 주소
+                            10); // 최대 검색 결과 개수
+                }
+                catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                System.out.println(addressList.get(0).toString());
+                // 콤마를 기준으로 split
+                String []splitStr = addressList.get(0).toString().split(",");
+                String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
+              //  System.out.println(address);
+
+                String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
+                String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
+                String feature = addressList.get(0).getFeatureName();
+                //System.out.println(latitude);
+                //System.out.println(longitude);
+
+                // 좌표(위도, 경도) 생성
+                LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                // 마커 생성
+                MarkerOptions mOptions2 = new MarkerOptions();
+                mOptions2.title(feature);
+                mOptions2.snippet(address);
+                mOptions2.position(point);
+                // 마커 추가
+                googleMap.clear();
+                optFirst=mOptions2;
+               optFirst.draggable(true);
+                googleMap.addMarker(optFirst).showInfoWindow();
+                // 해당 좌표로 화면 줌
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point,15));
+            }
+        });
+    }
+
+
+    public void setUpMap() {
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)
+        {
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
+                    0);
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},
+                    0);
+
+        }
+        else {
+            googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+            googleMap.setMyLocationEnabled(true);
+            googleMap.setTrafficEnabled(true);
+            googleMap.setIndoorEnabled(true);
+            googleMap.setBuildingsEnabled(true);
+            googleMap.getUiSettings().setZoomControlsEnabled(true);
+        }
+    }
     public void onResume() {
         super.onResume();
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     0);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},0);
-            googleMap.setMyLocationEnabled(true);
+           // googleMap.setMyLocationEnabled(true);
         }
     }
 
@@ -202,7 +301,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     0);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},0);
-            googleMap.setMyLocationEnabled(false);
+           // googleMap.setMyLocationEnabled(false);
         }
 
 
