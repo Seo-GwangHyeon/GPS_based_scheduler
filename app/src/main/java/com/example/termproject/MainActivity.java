@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Address;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -20,6 +22,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
+
+import java.io.IOException;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -50,7 +55,7 @@ public class MainActivity extends AppCompatActivity
         helper = new DBHelper(MainActivity.this,"schedule.db",null,1);
         Cursor c = db.query("schedule",null,null,null,null,null,null,null);
         adapter = new SimpleCursorAdapter(MainActivity.this, android.R.layout.simple_list_item_2, c,
-                new String[] {"content","latitude"} , new int[] {android.R.id.text1, android.R.id.text2},0);
+                new String[] {"content","address"} , new int[] {android.R.id.text1, android.R.id.text2},0);
         list.setAdapter(adapter);
 
         //여기까지 로딩부분

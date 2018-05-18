@@ -29,7 +29,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
   MapFragment mapFragment;
   public static double Glatitude;
   public static double Glongtitude;
-    private Geocoder geocoder;
+    public static Geocoder geocoder;
     LocationManager manager;
     GPSListener gpsListener;
     LatLng curPoint;
@@ -189,9 +189,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
         // System.out.println(addressList.get(0).toString());
         // 콤마를 기준으로 split
-        String []splitStr = addressList.get(0).toString().split(",");
-        String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
-        String feature = addressList.get(0).getFeatureName();
+
+        Address a=addressList.get(0);
+        String []splitStr = a.toString().split(",");
+        int countCountry=a.getCountryName().length();
+        String address = splitStr[0].substring(splitStr[0].indexOf("\"") +countCountry+2,splitStr[0].length() - 2); // 주소
+        String feature = a.getFeatureName();
 
         optFirst.position(curPoint);// 위도 • 경도
         optFirst.title(feature);// 제목 미리보기
@@ -230,9 +233,12 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                // System.out.println(addressList.get(0).toString());
                 // 콤마를 기준으로 split
-                String []splitStr = addressList.get(0).toString().split(",");
-                String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
-                String feature = addressList.get(0).getFeatureName();
+                Address a=addressList.get(0);
+                String []splitStr = a.toString().split(",");
+                int countCountry=a.getCountryName().length();
+                //Toast.makeText(this, countCountry, Toast.LENGTH_SHORT).show();
+                String address = splitStr[0].substring(splitStr[0].indexOf("\"") +countCountry+2,splitStr[0].length() - 2); // 주소
+                String feature = a.getFeatureName();
 
                 MarkerOptions tempMark=new MarkerOptions();
                 tempMark.title(feature);
@@ -268,17 +274,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     e.printStackTrace();
                 }
 
-                System.out.println(addressList.get(0).toString());
-                // 콤마를 기준으로 split
-                String []splitStr = addressList.get(0).toString().split(",");
-                String address = splitStr[0].substring(splitStr[0].indexOf("\"") + 1,splitStr[0].length() - 2); // 주소
-              //  System.out.println(address);
+
+                Address a=addressList.get(0);
+                String []splitStr = a.toString().split(",");
+                int countCountry=a.getCountryName().length();
+                //Toast.makeText(this, countCountry, Toast.LENGTH_SHORT).show();
+                String address = splitStr[0].substring(splitStr[0].indexOf("\"") +countCountry+2,splitStr[0].length() - 2); // 주소
+                String feature = a.getFeatureName();
+
 
                 String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
                 String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
-                String feature = addressList.get(0).getFeatureName();
-                //System.out.println(latitude);
-                //System.out.println(longitude);
 
                 // 좌표(위도, 경도) 생성
                 LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));

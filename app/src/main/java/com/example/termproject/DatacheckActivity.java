@@ -3,6 +3,7 @@ package com.example.termproject;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
+import android.location.Address;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +14,9 @@ import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.io.IOException;
+import java.util.List;
 
 import static com.example.termproject.MainActivity.global_id;
 
@@ -69,7 +73,7 @@ public class DatacheckActivity extends AppCompatActivity {
                 MainActivity.helper = new DBHelper(DatacheckActivity.this,"schedule.db",null,1);
                 Cursor c = MainActivity.db.query("schedule",null,null,null,null,null,null,null);
                 MainActivity.adapter = new SimpleCursorAdapter(DatacheckActivity.this, android.R.layout.simple_list_item_2, c,
-                        new String[] {"content","latitude"} , new int[] {android.R.id.text1, android.R.id.text2},0);
+                        new String[] {"content","address"} , new int[] {android.R.id.text1, android.R.id.text2},0);
                 MainActivity.list.setAdapter(MainActivity.adapter);
                 finish();
                 Toast.makeText(DatacheckActivity.this, "삭제됨", Toast.LENGTH_SHORT).show();
