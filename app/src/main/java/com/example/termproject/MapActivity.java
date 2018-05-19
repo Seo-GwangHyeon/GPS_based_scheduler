@@ -12,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.google.android.gms.location.places.PlaceDetectionApi;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -25,11 +27,11 @@ import javax.microedition.khronos.opengles.GL;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, Button.OnClickListener {
 
-  GoogleMap googleMap;
-  Button LocationInputBtn;
-  MapFragment mapFragment;
-  public static double Glatitude;
-  public static double Glongtitude;
+    GoogleMap googleMap;
+    Button LocationInputBtn;
+    MapFragment mapFragment;
+    public static double Glatitude;
+    public static double Glongtitude;
     public static Geocoder geocoder;
     LocationManager manager;
     GPSListener gpsListener;
@@ -41,24 +43,25 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Button SearchButton;
     int gpsEnable;
     Marker temp;
+
     protected void onCreate(Bundle savedInstanceState) {
 
-        Glatitude=0;
-        Glongtitude=0;
-        gpsEnable=1;
+        Glatitude = 0;
+        Glongtitude = 0;
+        gpsEnable = 1;
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-        mark_count=0;
-        LocationInputBtn=(Button) findViewById(R.id.location_input_button);
+        mark_count = 0;
+        LocationInputBtn = (Button) findViewById(R.id.location_input_button);
         LocationInputBtn.setOnClickListener(this);
         AddressInput = (EditText) findViewById(R.id.address_text);
-        SearchButton=(Button)findViewById(R.id.search_button);
+        SearchButton = (Button) findViewById(R.id.search_button);
         mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
 
         mapFragment.getMapAsync(this);
-        curPoint=new LatLng(37.555744, 126.970431);
+        curPoint = new LatLng(37.555744, 126.970431);
         optFirst = new MarkerOptions();
         optFirst.position(curPoint);
         gpsListener = new GPSListener();
