@@ -41,9 +41,8 @@ public class MainActivity extends AppCompatActivity
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         adapter=null;
-
-
         helper=new DBHelper(MainActivity.this,"schedule.db",null,1);
         db=helper.getWritableDatabase();
         helper.onCreate(db);

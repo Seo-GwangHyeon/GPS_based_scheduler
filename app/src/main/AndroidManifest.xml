@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.termproject">
 
-
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -14,26 +12,16 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <receiver android:name="com.example.termproject.WidgetProvider"
-            android:label="GPS based">
-            <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
-            </intent-filter>
-            <meta-data
-                android:name="android.appwidget.provider"
-                android:resource="@xml/widget_provider_basic"/>
-        </receiver>
-
         <!-- 개발용 KEY -->
-      <!---  <meta-data
+        <!--
+          -  <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="개발용 KEY" />
--->
-
+        -->
         <!-- 배포용 KEY -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAzfTNbLNelKzKmFQqBgttaZIdaPbmDWvA" />
+            android:value="AIzaSyB5VrU_shQlHpyYL7vxH0jbjyxR1EzcyDE" />
 
         <activity
             android:name=".MainActivity"
@@ -45,44 +33,41 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".SettingActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar2">
+            android:theme="@style/AppTheme.NoActionBar2" >
         </activity>
         <activity
             android:name=".AddScheduleActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar2"
-            >
-
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar2" />
         <activity
             android:name=".DatacheckActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar2"
-            >
-        </activity>
+            android:theme="@style/AppTheme.NoActionBar2" />
         <activity
             android:name=".RewriteActivity"
             android:label="위치 기반 스케줄러"
-            android:theme="@style/AppTheme.NoActionBar2"
-            >
+            android:theme="@style/AppTheme.NoActionBar2" >
         </activity>
         <activity
             android:name=".MapActivity"
             android:label="위치 기반 스케줄러">
-            <!--android:theme="@style/AppTheme.NoActionBar2"-->
+
+            <!-- android:theme="@style/AppTheme.NoActionBar2" -->
 
         </activity>
         <activity
             android:name=".SelHowLocPopupActivity"
             android:label="장소 추가"
-            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert">
-
-        </activity >
-
-    </application>
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" >
+        </activity>
+        <activity
+            android:name=".RangePopupActivity"
+            android:label="범위 지정"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" >
+        </activity>
+      </application>
 
 </manifest>

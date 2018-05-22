@@ -24,7 +24,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.List;
 
-import javax.microedition.khronos.opengles.GL;
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, Button.OnClickListener {
 
@@ -46,13 +45,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     Marker temp;
 
     protected void onCreate(Bundle savedInstanceState) {
-
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_map);
         Glatitude = 0;
         Glongtitude = 0;
         gpsEnable = 1;
 
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_map);
+
         mark_count = 0;
         LocationInputBtn = (Button) findViewById(R.id.location_input_button);
         LocationInputBtn.setOnClickListener(this);
@@ -412,6 +411,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
 
 
+    }
+    public void OnBackPressed()
+    {
+
+        super.onBackPressed();
     }
 }
 

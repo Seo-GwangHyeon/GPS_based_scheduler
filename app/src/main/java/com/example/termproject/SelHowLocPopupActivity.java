@@ -38,9 +38,11 @@ public class SelHowLocPopupActivity extends AppCompatActivity implements Button.
         switch (view.getId()) {
             case R.id.inperon_button:
                 startActivity(new Intent(this,MapActivity.class));
+                finish();
                 break;
             case R.id.range_button:
-
+                startActivity(new Intent(this,RangePopupActivity.class));
+                finish();
 
                 break;
             case R.id.not_button:
@@ -51,5 +53,4 @@ public class SelHowLocPopupActivity extends AppCompatActivity implements Button.
 
         }
     }
-
-        }
+}
