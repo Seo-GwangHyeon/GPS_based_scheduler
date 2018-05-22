@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -60,6 +61,66 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
 
+        AddressInput.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                //Enter key Action
+                if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                    //Enter키눌렀을떄 처리
+
+                    String str = AddressInput.getText().toString();
+                    List<Address> addressList = null;
+                    try {
+                        // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
+                        addressList = geocoder.getFromLocationName(
+                                str, // 주소
+                                10); // 최대 검색 결과 개수
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    if(!addressList.isEmpty()) {
+                        Address a = addressList.get(0);
+                        String[] splitStr = a.toString().split(",");
+                        int countCountry = a.getCountryName().length();
+                        //Toast.makeText(this, countCountry, Toast.LENGTH_SHORT).show();
+                        String address = splitStr[0].substring(splitStr[0].indexOf("\"") + countCountry + 2, splitStr[0].length() - 2); // 주소
+                        String feature = a.getFeatureName();
+
+
+                        String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
+                        String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
+
+                        // 좌표(위도, 경도) 생성
+                        LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                        Glatitude = point.latitude;
+                        Glongtitude = point.longitude;
+                        // 마커 생성
+                        MarkerOptions mOptions2 = new MarkerOptions();
+                        mOptions2.title(feature);
+                        mOptions2.snippet(address);
+                        mOptions2.position(point);
+                        // 마커 추가
+                        // googleMap.clear();
+                        temp.remove();
+                        optFirst = mOptions2;
+                        optFirst.draggable(true);
+
+                        temp = googleMap.addMarker(optFirst);
+                        temp.showInfoWindow();
+                        // 해당 좌표로 화면 줌
+                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+                    }
+                    else
+                    {//결과가 없을경우
+                        Toast.makeText(MapActivity.this, "검색결과가 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+
+                    return true;
+                }
+                return false;
+            }
+        });
         mapFragment.getMapAsync(this);
         curPoint = new LatLng(37.555744, 126.970431);
         optFirst = new MarkerOptions();
@@ -253,6 +314,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         SearchButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
                 String str = AddressInput.getText().toString();
                 List<Address> addressList = null;
                 try {
@@ -264,7 +327,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     e.printStackTrace();
                 }
 
-
+                if(!addressList.isEmpty())
+                {
                 Address a = addressList.get(0);
                 String[] splitStr = a.toString().split(",");
                 int countCountry = a.getCountryName().length();
@@ -295,6 +359,11 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 temp.showInfoWindow();
                 // 해당 좌표로 화면 줌
                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+                }
+                else
+                {//결과가 없을경우
+                    Toast.makeText(MapActivity.this, "검색결과가 없습니다.", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 

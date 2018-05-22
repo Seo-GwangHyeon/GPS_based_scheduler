@@ -46,6 +46,7 @@ public class RewriteActivity extends AppCompatActivity  implements Button.OnClic
 
                 values.put("content", String.valueOf(editText1.getText()));
                 String numStr2=String.valueOf(global_id);
+
                 MainActivity.db.update("schedule",values,"_id=?", new String[] {numStr2});
 
                 //로오딩

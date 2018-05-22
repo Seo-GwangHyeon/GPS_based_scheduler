@@ -52,6 +52,8 @@ public class DatacheckActivity extends AppCompatActivity {
         content =c.getString(0);
         address =c.getString(1);
 
+        //
+
         ContentView.setText(content);
         AddressView.setText(address);
        // Toast.makeText(this, content, Toast.LENGTH_SHORT).show();

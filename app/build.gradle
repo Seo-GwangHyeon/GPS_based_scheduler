@@ -12,8 +12,17 @@ android {
     }
     buildTypes {
         release {
+
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            resValue "string", "google_maps_api_key", "AIzaSyAzfTNbLNelKzKmFQqBgttaZIdaPbmDWvA"
+
+
+        }
+        debug{
+            resValue "string", "google_maps_api_key", "AIzaSyB5VrU_shQlHpyYL7vxH0jbjyxR1EzcyDE"
+
+
         }
     }
 }

@@ -29,9 +29,19 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         String sql="drop table if exists schedule";
-        System.out.println(sql);
+       /* switch (oldVersion) {
+            case 1 :
+                try {
+                    db.beginTransaction();
+                    db.execSQL("ALTER TABLE schedule ADD COLUMN lattitude double");
+                    db.execSQL("ALTER TABLE schedule ADD COLUMN longtitude double");
+                    db.setTransactionSuccessful();
+                } catch (IllegalStateException e) {
 
+                } finally {
+                    db.endTransaction();
+                };
+                break;
+        }*/
     }
-
-
 }
