@@ -162,7 +162,8 @@ public class MainActivity extends AppCompatActivity
             }
             case  R.id.favorite_manage:
             {
-
+                Intent intent= new Intent(MainActivity.this, SelectFavoriteActivity.class);
+                startActivity(intent);
                 break;
             }
             case  R.id.view_option:
