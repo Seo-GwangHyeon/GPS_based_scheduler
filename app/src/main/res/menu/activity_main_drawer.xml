@@ -5,17 +5,25 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_camera"
+            android:id="@+id/home"
+            android:title="홈으로" />
+        <item
+            android:id="@+id/favorite1"
             android:title="자주찾는 장소1" />
         <item
-            android:id="@+id/nav_gallery"
+            android:id="@+id/favorite2"
             android:title="자주찾는 장소2" />
         <item
-            android:id="@+id/nav_slideshow"
+            android:id="@+id/favorite3"
 
             android:title="자주찾는 장소3" />
         <item
-            android:id="@+id/nav_manage"
+            android:id="@+id/favorite_manage"
+
+            android:title="자주찾는 장소 관리" />
+
+        <item
+            android:id="@+id/view_option"
 
             android:title="보기 옵션" />
     </group>

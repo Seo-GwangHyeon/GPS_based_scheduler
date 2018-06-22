@@ -44,6 +44,15 @@ public class RewriteActivity extends AppCompatActivity  implements Button.OnClic
 
         editText1= (EditText) findViewById(R.id.edit_schedule);
         editText1.setText(DatacheckActivity.content);
+
+        if(MainActivity.nowDB!="schedule")
+        {
+            AddLocationButton.setEnabled(false);
+        }
+        else
+        {
+            AddLocationButton.setEnabled(true);
+        }
     }
 
     public void onClick(View view) {
@@ -79,16 +88,17 @@ public class RewriteActivity extends AppCompatActivity  implements Button.OnClic
                 values.put("longtitude", MapActivity.Glongtitude);
 
                 String numStr2=String.valueOf(global_id);
-                MainActivity.db.update("schedule",values,"_id=?", new String[] {numStr2});
+                MainActivity.db.update(MainActivity.nowDB,values,"_id=?", new String[] {numStr2});
 
                 //로오딩
-                MainActivity.helper = new DBHelper(RewriteActivity.this,"schedule.db",null,1);
-                Cursor c = MainActivity.db.query("schedule",null,null,null,null,null,null,null);
+                MainActivity.helper = new DBHelper(RewriteActivity.this,MainActivity.nowDB+".db",null,1);
+                Cursor c = MainActivity.db.query(MainActivity.nowDB,null,null,null,null,null,null,null);
                 MainActivity.adapter = new SimpleCursorAdapter(RewriteActivity.this, android.R.layout.simple_list_item_2, c,
                         new String[] {"content","address"} , new int[] {android.R.id.text1, android.R.id.text2},0);
                 MainActivity.list.setAdapter(MainActivity.adapter);
+
                 editText1.setText("");
-                String SQL="select content, address from schedule where _id = ?";
+                String SQL="select content, address from "+MainActivity.nowDB+" where _id = ?";
                 String[] args = new String[] {numStr2};
                 Cursor c1 = MainActivity.db.rawQuery(SQL,args);
                 c1.moveToNext();

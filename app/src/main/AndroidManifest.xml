@@ -68,6 +68,12 @@
             android:label="범위 지정"
             android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" >
         </activity>
+        <activity
+            android:name=".SelectFavoriteActivity"
+            android:label="자주찾는 장소 설정"
+            android:theme="@style/AppTheme.NoActionBar"
+             >
+        </activity>
       </application>
 
 </manifest>

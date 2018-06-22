@@ -33,7 +33,7 @@ public class MainActivity extends AppCompatActivity
     public static ListView list;
     public static SimpleCursorAdapter adapter;
     public static int global_id;
-
+    public static String nowDB;// 현재 참조 데이터 베이스
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +43,8 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         adapter=null;
-        helper=new DBHelper(MainActivity.this,"schedule.db",null,1);
+        nowDB="schedule";
+        helper=new DBHelper(MainActivity.this,nowDB+".db",null,1);
         db=helper.getWritableDatabase();
         helper.onCreate(db);
 
@@ -51,8 +52,8 @@ public class MainActivity extends AppCompatActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         //여기 로딩 부분
-        helper = new DBHelper(MainActivity.this,"schedule.db",null,1);
-        Cursor c = db.query("schedule",null,null,null,null,null,null,null);
+       // helper = new DBHelper(MainActivity.this,nowDB+".db",null,1);
+        Cursor c = db.query(nowDB,null,null,null,null,null,null,null);
         adapter = new SimpleCursorAdapter(MainActivity.this, android.R.layout.simple_list_item_2, c,
                 new String[] {"content","address"} , new int[] {android.R.id.text1, android.R.id.text2},0);
         list.setAdapter(adapter);
@@ -72,7 +73,9 @@ public class MainActivity extends AppCompatActivity
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 global_id=(int)id;
-                Intent intent= new Intent(MainActivity.this, DatacheckActivity.class);
+                String a=Integer.toString(global_id);
+                Toast.makeText(MainActivity.this, a, Toast.LENGTH_SHORT).show();
+               Intent intent= new Intent(MainActivity.this, DatacheckActivity.class);
                 startActivity(intent);
 
 
@@ -134,18 +137,63 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_camera) {
-            // Handle the camera action
-        } else if (id == R.id.nav_gallery) {
+        switch(id)
+        {
+            case  R.id.home:
+            {
+                nowDB="schedule";
+                break;
+            }
 
-        } else if (id == R.id.nav_slideshow) {
+            case  R.id.favorite1:
+            {
+                nowDB="favorite1";
+                break;
+            }
+            case  R.id.favorite2:
+            {
+                nowDB="favorite2";
+                break;
+            }
+            case  R.id.favorite3:
+            {
+                nowDB="favorite3";
+                break;
+            }
+            case  R.id.favorite_manage:
+            {
 
-        } else if (id == R.id.nav_manage) {
-        }
+                break;
+            }
+            case  R.id.view_option:
+            {
 
+                break;
+            }
+            default:
+            {
+                break;
+            }
+
+
+        }//end switch
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
+
+
+        helper = new DBHelper(MainActivity.this,nowDB+".db",null,1);
+        db=helper.getWritableDatabase();
+        helper.onCreate(db);
+
+        Cursor c = db.query(nowDB,null,null,null,null,null,null,null);
+        adapter = new SimpleCursorAdapter(MainActivity.this, android.R.layout.simple_list_item_2, c,
+                new String[] {"content","address"} , new int[] {android.R.id.text1, android.R.id.text2},0);
+        list.setAdapter(adapter);
+
+
+
+
         return true;
     }
 

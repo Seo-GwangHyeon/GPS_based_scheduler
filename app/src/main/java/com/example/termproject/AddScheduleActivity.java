@@ -49,58 +49,59 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
         // TextView textView1 = (TextView) findViewById(R.id.schedule_add_layout);
         switch (view.getId())
         {
-            case R.id.save :
-            //저장부분
-            MainActivity.db = MainActivity.helper.getWritableDatabase();
+            case R.id.save : {  //저장부분
+                MainActivity.db = MainActivity.helper.getWritableDatabase();
 
-            String address=" ";
-            if(address_used==1) {
-                //adress 추가
-                List<Address> addressList = null;
-                try {
-                    // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
-                    addressList = MapActivity.geocoder.getFromLocation(MapActivity.Glatitude, MapActivity.Glongtitude, 10); // 최대 검색 결과 개수
-                } catch (IOException e) {
-                    e.printStackTrace();
+                String address = " ";
+                if (address_used == 1) {
+                    //adress 추가
+                    List<Address> addressList = null;
+                    try {
+                        // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
+                        addressList = MapActivity.geocoder.getFromLocation(MapActivity.Glatitude, MapActivity.Glongtitude, 10); // 최대 검색 결과 개수
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    Address a = addressList.get(0);
+                    String[] splitStr = a.toString().split(",");
+                    int countCountry = a.getCountryName().length();
+                    //Toast.makeText(this, countCountry, Toast.LENGTH_SHORT).show();
+                    address = splitStr[0].substring(splitStr[0].indexOf("\"") + countCountry + 2, splitStr[0].length() - 2); // 주소
+
+                    //-----------address 출력부
                 }
 
-                Address a = addressList.get(0);
-                String[] splitStr = a.toString().split(",");
-                int countCountry = a.getCountryName().length();
-                //Toast.makeText(this, countCountry, Toast.LENGTH_SHORT).show();
-                 address = splitStr[0].substring(splitStr[0].indexOf("\"") + countCountry + 2, splitStr[0].length() - 2); // 주소
+                ContentValues values = new ContentValues();
+                values.put("content", String.valueOf(SchedultText.getText()));
+                if(address_used==0)
+                    address=" ";
+                values.put("address", address);
+                values.put("latitude", MapActivity.Glatitude);
+                values.put("longtitude", MapActivity.Glongtitude);
 
-                //-----------address 출력부
+                Log.v("addlocation", "value에 넣기");
+
+                MainActivity.db.insert(MainActivity.nowDB, null, values);
+
+
+                //세팅부
+                MainActivity.helper = new DBHelper(AddScheduleActivity.this, MainActivity.nowDB+".db", null, 1);
+                Cursor c = MainActivity.db.query(MainActivity.nowDB, null, null, null, null, null, null, null);
+                MainActivity.adapter = new SimpleCursorAdapter(AddScheduleActivity.this, android.R.layout.simple_list_item_2, c,
+                        new String[]{"content", "address"}, new int[]{android.R.id.text1, android.R.id.text2}, 0);
+
+                MainActivity.list.setAdapter(MainActivity.adapter);
+
+                //Log.v("location", (String) values.get("latitude"));
+                //  Log.v("addlocation","세팅도 됨");
+
+                Toast.makeText(this, String.valueOf(SchedultText.getText()) + "저장됨", Toast.LENGTH_SHORT).show();
+                MapActivity.Glatitude = 0;
+                MapActivity.Glongtitude = 0;
+                finish();
+                break;
             }
-
-            ContentValues values=new ContentValues();
-            values.put("content", String.valueOf(SchedultText.getText()));
-            values.put("address",address);
-            values.put("latitude", MapActivity.Glatitude);
-            values.put("longtitude", MapActivity.Glongtitude);
-
-
-            Log.v("addlocation","value에 넣기");
-
-            MainActivity.db.insert("schedule",null,values);
-
-
-            //세팅부
-            MainActivity.helper = new DBHelper(AddScheduleActivity.this,"schedule.db",null,1);
-            Cursor c = MainActivity.db.query("schedule",null,null,null,null,null,null,null);
-            MainActivity.adapter = new SimpleCursorAdapter(AddScheduleActivity.this, android.R.layout.simple_list_item_2, c,
-                    new String[] {"content","address"} , new int[] {android.R.id.text1, android.R.id.text2},0);
-
-            MainActivity.list.setAdapter(MainActivity.adapter);
-
-            //Log.v("location", (String) values.get("latitude"));
-            Log.v("addlocation","세팅도 됨");
-
-            Toast.makeText(this, String.valueOf(SchedultText.getText())+"저장됨", Toast.LENGTH_SHORT).show();
-            MapActivity.Glatitude=0;
-            MapActivity.Glongtitude=0;
-            finish();
-            break ;
             case R.id.cancel :
 
                 finish();
@@ -109,11 +110,6 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
                 address_used=1;
                 Intent intent = new Intent(AddScheduleActivity.this, SelHowLocPopupActivity.class);
                 startActivity(intent);
-
-
-                //Intent intent= new Intent(AddScheduleActivity.this, MapActivity.class);
-                //startActivity(intent);
-
                 break;
             default:
                 Toast.makeText(this, "나머지", Toast.LENGTH_SHORT).show();
