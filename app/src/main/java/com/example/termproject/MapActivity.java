@@ -1,23 +1,30 @@
 package com.example.termproject;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.*;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Telephony;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.PlaceDetectionApi;
+import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.google.android.gms.location.places.ui.PlaceAutocompleteFragment;
+import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.android.gms.location.places.ui.PlaceSelectionListener;
 import com.google.android.gms.maps.*;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -26,7 +33,9 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
+import java.util.Map;
 
 
 public class MapActivity extends AppCompatActivity implements OnMapReadyCallback, Button.OnClickListener {
@@ -49,13 +58,14 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     int gpsEnable;
     Marker temp;
 
+    final int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
         Glatitude = 0;
         Glongtitude = 0;
         gpsEnable = 1;
-
 
         mark_count = 0;
         LocationInputBtn = (Button) findViewById(R.id.location_input_button);
@@ -65,73 +75,69 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
 
-        AddressInput.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-            //Enter key Action
-            if ((event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                //Enter키눌렀을떄 처리
-
-                String str = AddressInput.getText().toString();
-                if(!str.isEmpty()) {
-                    List<Address> addressList = null;
-
-                    try {
-                        // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
-                        addressList = geocoder.getFromLocationName(
-                                str, // 주소
-                                10); // 최대 검색 결과 개수
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-
-                    if (!addressList.isEmpty()) {
-                        Address a = addressList.get(0);
-                        String[] splitStr = a.toString().split(",");
-                        int countCountry = a.getCountryName().length();
-                        //Toast.makeText(this, countCountry, Toast.LENGTH_SHORT).show();
-                        Gaddress = splitStr[0].substring(splitStr[0].indexOf("\"") + countCountry + 2, splitStr[0].length() - 2); // 주소
-                        String feature = a.getFeatureName();
-
-
-                        String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
-                        String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
-
-                        // 좌표(위도, 경도) 생성
-                        LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-                        Glatitude = point.latitude;
-                        Glongtitude = point.longitude;
-                        // 마커 생성
-                        MarkerOptions mOptions2 = new MarkerOptions();
-                        mOptions2.title(feature);
-                        mOptions2.snippet(Gaddress);
-                        mOptions2.position(point);
-                        // 마커 추가
-                        // googleMap.clear();
-                        temp.remove();
-                        optFirst = mOptions2;
-                        optFirst.draggable(true);
-
-                        temp = googleMap.addMarker(optFirst);
-                        temp.showInfoWindow();
-                        // 해당 좌표로 화면 줌
-                        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
-                    } else {//결과가 없을경우
-                        Toast.makeText(MapActivity.this, "검색결과가 없습니다.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                return true;
-            }
-            return false;
-            }
-        });
-        mapFragment.getMapAsync(this);
+        mapFragment.getMapAsync(MapActivity.this);
         curPoint = new LatLng(37.555744, 126.970431);
         optFirst = new MarkerOptions();
         optFirst.position(curPoint);
         gpsListener = new GPSListener();
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         startLocationService();
+
+
+
+        AddressInput.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                try {
+                    Intent intent =
+                            new PlaceAutocomplete.IntentBuilder(PlaceAutocomplete.MODE_OVERLAY)
+                                    .build(MapActivity.this);
+                    startActivityForResult(intent, PLACE_AUTOCOMPLETE_REQUEST_CODE);
+
+                    //intent.
+
+                } catch (GooglePlayServicesRepairableException e) {
+                    // TODO: Handle the error.
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    // TODO: Handle the error.
+                }
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+
+                Gaddress = (String) place.getAddress();
+                Glatitude = place.getLatLng().latitude;
+                Glongtitude = place.getLatLng().longitude;
+
+                MarkerOptions mOption = new MarkerOptions();
+                mOption.title((String)place.getName());
+                mOption.position(place.getLatLng());
+                mOption.snippet(Gaddress);
+                temp.remove();
+                optFirst = mOption;
+                optFirst.draggable(true);
+
+                temp = googleMap.addMarker(optFirst);
+                temp.showInfoWindow();
+
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(place.getLatLng(), 15));
+
+                //Log.i(TAG, "Place: " + place.getName());
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                //Log.i(TAG, status.getStatusMessage());
+
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled operation.
+            }
+        }
     }
 
     public boolean startLocationService() {
@@ -159,7 +165,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                         minTime, minDistance, gpsListener);
                 // 위치 확인이 안되는 경우에도 최근에 확인된 위치 정보 먼저 확인
 
-                 lastLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                lastLocation = manager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
                 if (lastLocation != null) {
                     Glatitude = lastLocation.getLatitude();
                     Glongtitude = lastLocation.getLongitude();
@@ -182,7 +188,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                 // 버튼누르겨 화면 끄고 나서
                 // 더블로 롱티듀드 래티듀드 받아옴
                 //mapFragment.onStop();
-               // Toast.makeText(this, "제대로", Toast.LENGTH_SHORT).show();
+                // Toast.makeText(this, "제대로", Toast.LENGTH_SHORT).show();
                 manager.removeUpdates(gpsListener);
                 super.onStop();
                 finish();
@@ -234,7 +240,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     }
 
     private void showCurrentlocation(Double latitude, Double longitude) {
-         curPoint = new LatLng(latitude, longitude);
+        curPoint = new LatLng(latitude, longitude);
         googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(curPoint, 15));
 
         //마커추가
@@ -333,36 +339,36 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
                 if(!addressList.isEmpty())
                 {
-                Address a = addressList.get(0);
-                String[] splitStr = a.toString().split(",");
-                int countCountry = a.getCountryName().length();
-                //Toast.makeText(this, countCountry, Toast.LENGTH_SHORT).show();
+                    Address a = addressList.get(0);
+                    String[] splitStr = a.toString().split(",");
+                    int countCountry = a.getCountryName().length();
+                    //Toast.makeText(this, countCountry, Toast.LENGTH_SHORT).show();
                     Gaddress = splitStr[0].substring(splitStr[0].indexOf("\"") + countCountry + 2, splitStr[0].length() - 2); // 주소
-                String feature = a.getFeatureName();
+                    String feature = a.getFeatureName();
 
 
-                String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
-                String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
+                    String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
+                    String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
 
-                // 좌표(위도, 경도) 생성
-                LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-                Glatitude = point.latitude;
-                Glongtitude = point.longitude;
-                // 마커 생성
-                MarkerOptions mOptions2 = new MarkerOptions();
-                mOptions2.title(feature);
-                mOptions2.snippet(Gaddress);
-                mOptions2.position(point);
-                // 마커 추가
-                // googleMap.clear();
-                temp.remove();
-                optFirst = mOptions2;
-                optFirst.draggable(true);
+                    // 좌표(위도, 경도) 생성
+                    LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
+                    Glatitude = point.latitude;
+                    Glongtitude = point.longitude;
+                    // 마커 생성
+                    MarkerOptions mOptions2 = new MarkerOptions();
+                    mOptions2.title(feature);
+                    mOptions2.snippet(Gaddress);
+                    mOptions2.position(point);
+                    // 마커 추가
+                    // googleMap.clear();
+                    temp.remove();
+                    optFirst = mOptions2;
+                    optFirst.draggable(true);
 
-                temp = googleMap.addMarker(optFirst);
-                temp.showInfoWindow();
-                // 해당 좌표로 화면 줌
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
+                    temp = googleMap.addMarker(optFirst);
+                    temp.showInfoWindow();
+                    // 해당 좌표로 화면 줌
+                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
                 }
                 else
                 {//결과가 없을경우
@@ -401,7 +407,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     0);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},0);
-           // googleMap.setMyLocationEnabled(true);
+            // googleMap.setMyLocationEnabled(true);
         }
     }
 
@@ -412,16 +418,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
                     0);
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION},0);
-           // googleMap.setMyLocationEnabled(false);
+            // googleMap.setMyLocationEnabled(false);
         }
 
 
     }
     public void OnBackPressed()
     {
-
         super.onBackPressed();
     }
 }
-
-
