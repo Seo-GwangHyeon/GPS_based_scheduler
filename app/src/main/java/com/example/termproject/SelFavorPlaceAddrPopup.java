@@ -19,6 +19,7 @@ public class SelFavorPlaceAddrPopup extends AppCompatActivity implements Button.
     Button EditAddrComplete;
     Intent intent;
     String address;
+    int addr_on;
     int tempInt;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +43,7 @@ public class SelFavorPlaceAddrPopup extends AppCompatActivity implements Button.
         Cursor c = MainActivity.db.rawQuery(SQL,args);
         c.moveToNext();
         address =c.getString(1);
-
+        addr_on=0;
 
         //일단 TextView로 데이터베이스
     }
@@ -50,8 +51,10 @@ public class SelFavorPlaceAddrPopup extends AppCompatActivity implements Button.
     @Override
     protected void onResume() {
         super.onResume();
+        if(addr_on!=0)
+            address=MapActivity.Gaddress;
         ViewAddr.setText(address);
-
+        addr_on=1;
     }
 
     @Override
@@ -71,7 +74,7 @@ public class SelFavorPlaceAddrPopup extends AppCompatActivity implements Button.
             {//수정
                 Intent mapintent= new Intent(SelFavorPlaceAddrPopup.this, MapActivity.class);
                 startActivity(mapintent);
-                address=MapActivity.Gaddress;
+
 
                 break;
             }//end case

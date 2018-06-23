@@ -153,8 +153,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         else {
             try {
-                // 위치 관리자 객체 참조
-                //manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
                 // GPS를 이용한 위치 요청
                 manager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
@@ -423,8 +421,13 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
 
 
     }
-    public void OnBackPressed()
+    public void onBackPressed()
     {
+        Glatitude=0;
+        Gaddress="";
+        Glongtitude=0;
+
+
         super.onBackPressed();
     }
 }

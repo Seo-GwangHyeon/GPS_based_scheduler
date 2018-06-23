@@ -183,11 +183,6 @@ public class MainActivity extends AppCompatActivity
                 startActivity(intent);
                 break;
             }
-            case  R.id.view_option:
-            {
-
-                break;
-            }
             default:
             {
                 break;
