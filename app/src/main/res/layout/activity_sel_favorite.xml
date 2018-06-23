@@ -1,29 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:stretchColumns="*"
+    tools:context=".SelectFavoriteActivity"
     >
+    <TableRow>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title1"
+            android:gravity="left"
+            android:text="  1"
 
+            />
+
+    </TableRow>
     <TableRow>
         <TextView
              android:layout_width="wrap_content"
              android:layout_height="wrap_content"
-            android:id="@+id/text1"
-            android:text="text1"
+            android:id="@+id/favorite_name1"
+            android:gravity="center"
+            android:text="favorite_name1"
 
         />
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/button1"
-            android:text="button1"
-
+            android:id="@+id/favorite_name1_button"
+            android:gravity="center"
+            android:text="수정"
          />
     </TableRow>
+    <TableRow>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/favorite_address1"
+            android:gravity="center"
+            android:text="favorite_address1"
 
-    
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/favorite_address1_button"
+            android:text="수정"
+            />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title2"
+            android:gravity="left"
+            android:text="  2"
+
+            />
+
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/favorite_name2"
+            android:gravity="center"
+            android:text="favorite_name2"
+
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/favorite_name2_button"
+            android:gravity="center"
+            android:text="수정"
+            />
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/favorite_address2"
+            android:gravity="center"
+            android:text="favorite_address2"
+
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/favorite_address2_button"
+            android:text="수정"
+            />
+    </TableRow>
+
+    <TableRow>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/title3"
+            android:gravity="left"
+            android:text="  3"
+
+            />
+
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/favorite_name3"
+            android:gravity="center"
+            android:text="favorite_name3"
+
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/favorite_name3_button"
+            android:gravity="center"
+            android:text="수정"
+            />
+    </TableRow>
+    <TableRow>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/favorite_address3"
+            android:gravity="center"
+            android:text="favorite_address3"
+
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/favorite_address3_button"
+            android:text="수정"
+            />
+    </TableRow>
+
 
 
 </TableLayout>

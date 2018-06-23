@@ -54,28 +54,15 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
 
                 String address = " ";
                 if (address_used == 1) {
-                    //adress 추가
-                    List<Address> addressList = null;
-                    try {
-                        // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
-                        addressList = MapActivity.geocoder.getFromLocation(MapActivity.Glatitude, MapActivity.Glongtitude, 10); // 최대 검색 결과 개수
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
 
-                    Address a = addressList.get(0);
-                    String[] splitStr = a.toString().split(",");
-                    int countCountry = a.getCountryName().length();
-                    //Toast.makeText(this, countCountry, Toast.LENGTH_SHORT).show();
-                    address = splitStr[0].substring(splitStr[0].indexOf("\"") + countCountry + 2, splitStr[0].length() - 2); // 주소
-
-                    //-----------address 출력부
+                    address = MapActivity.Gaddress;
                 }
+                else
+                    address=" ";
 
                 ContentValues values = new ContentValues();
                 values.put("content", String.valueOf(SchedultText.getText()));
-                if(address_used==0)
-                    address=" ";
+
                 values.put("address", address);
                 values.put("latitude", MapActivity.Glatitude);
                 values.put("longtitude", MapActivity.Glongtitude);

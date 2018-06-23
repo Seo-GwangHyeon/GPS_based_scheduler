@@ -1,6 +1,5 @@
 package com.example.termproject;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -13,7 +12,7 @@ public class SelHowLocPopupActivity extends AppCompatActivity implements Button.
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.sel_how_loc_popup_layout);
+        setContentView(R.layout.popup_sel_how_loc);
 
         InpersonButton = (Button) findViewById(R.id.inperon_button);
         RangeButton = (Button) findViewById(R.id.range_button);

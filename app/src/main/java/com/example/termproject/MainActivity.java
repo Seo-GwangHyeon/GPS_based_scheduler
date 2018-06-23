@@ -1,5 +1,6 @@
 package com.example.termproject;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,6 +12,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.*;
 import android.support.v4.app.ActivityCompat;
@@ -19,6 +21,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.SpannableString;
 import android.util.Log;
 import android.view.*;
 import android.widget.*;
@@ -27,14 +30,15 @@ import java.io.IOException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, NavigationView.OnCreateContextMenuListener {
     public static DBHelper helper;
     public static SQLiteDatabase db;
     public static ListView list;
     public static SimpleCursorAdapter adapter;
     public static int global_id;
     public static String nowDB;// 현재 참조 데이터 베이스
-
+    public static MenuItem[] items;
+    private Menu baseMenu;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -50,6 +54,10 @@ public class MainActivity extends AppCompatActivity
 
         list= (ListView) findViewById(R.id.schedule_list);
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        items=new MenuItem[4];
+
+
 
         //여기 로딩 부분
        // helper = new DBHelper(MainActivity.this,nowDB+".db",null,1);
@@ -77,8 +85,6 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this, a, Toast.LENGTH_SHORT).show();
                Intent intent= new Intent(MainActivity.this, DatacheckActivity.class);
                 startActivity(intent);
-
-
             }
         });
 
@@ -91,9 +97,19 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-
+       Menu tempMenu = navigationView.getMenu();
+        items[1]=(MenuItem) tempMenu.getItem(1);
+        items[2]=(MenuItem) tempMenu.getItem(2);
+        items[3]=(MenuItem) tempMenu.getItem(3);
     }//end OnCreate---------------------------------------------------------------------------
 
+    public void onResume() {
+        super.onResume();
+
+        setPlaceName(1);
+        setPlaceName(2);
+        setPlaceName(3);
+    }
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -110,7 +126,7 @@ public class MainActivity extends AppCompatActivity
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
     }
-
+ //   onCreateNavigationItemSelected
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -124,14 +140,13 @@ public class MainActivity extends AppCompatActivity
             Intent intent = new Intent(MainActivity.this, SettingActivity.class);
             startActivity(intent);
 
-
             return true;
         }
 
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
@@ -142,12 +157,14 @@ public class MainActivity extends AppCompatActivity
             case  R.id.home:
             {
                 nowDB="schedule";
+
                 break;
             }
 
             case  R.id.favorite1:
             {
                 nowDB="favorite1";
+               // item.setTitle("aaa");
                 break;
             }
             case  R.id.favorite2:
@@ -200,5 +217,13 @@ public class MainActivity extends AppCompatActivity
 
 
 
-
+    void setPlaceName(int a)
+    {
+        String numStr2 = String.valueOf(a);
+        String[] args = new String[] {numStr2};
+        Cursor c = MainActivity.db.rawQuery("select placename from favorites where _id = ?",args);
+        c.moveToNext();
+        String name =c.getString(0);
+        items[a].setTitle(name);
+    }
 }

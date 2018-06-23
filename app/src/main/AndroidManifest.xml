@@ -71,8 +71,17 @@
         <activity
             android:name=".SelectFavoriteActivity"
             android:label="자주찾는 장소 설정"
-            android:theme="@style/AppTheme.NoActionBar"
-             >
+            android:theme="@style/AppTheme.NoActionBar2">
+        </activity>
+        <activity
+            android:name=".SelFavorPlacenamePopup"
+            android:label="자주찾는 장소 이름 수정"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" >
+        </activity>
+        <activity
+            android:name=".SelFavorPlaceAddrPopup"
+            android:label="자주찾는 장소 주소 수정"
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" >
         </activity>
       </application>
 
