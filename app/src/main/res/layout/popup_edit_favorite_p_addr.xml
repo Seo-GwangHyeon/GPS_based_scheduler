@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="300dp"
+    android:layout_height="300dp"
+    android:layout_gravity="center"
+    android:orientation="vertical"
+
+    tools:context=".SelFavorPlaceAddrPopup">
+
+    <TextView
+        android:id="@+id/edit_fp_name"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@+id/button_fpn_name" />
+
+    <Button
+        android:id="@+id/button_fp_addr"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="수정"
+        />
+    <Button
+        android:id="@+id/button_fp_addr_complete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="수정완료"
+        />
+</LinearLayout>
