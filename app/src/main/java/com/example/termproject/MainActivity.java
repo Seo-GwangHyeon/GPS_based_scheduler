@@ -56,9 +56,6 @@ public class MainActivity extends AppCompatActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 
         items=new MenuItem[4];
-
-
-
         //여기 로딩 부분
        // helper = new DBHelper(MainActivity.this,nowDB+".db",null,1);
         Cursor c = db.query(nowDB,null,null,null,null,null,null,null);
@@ -81,8 +78,8 @@ public class MainActivity extends AppCompatActivity
         list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 global_id=(int)id;
-                String a=Integer.toString(global_id);
-                Toast.makeText(MainActivity.this, a, Toast.LENGTH_SHORT).show();
+               // String a=Integer.toString(global_id);
+                //Toast.makeText(MainActivity.this, a, Toast.LENGTH_SHORT).show();
                Intent intent= new Intent(MainActivity.this, DatacheckActivity.class);
                 startActivity(intent);
             }
@@ -164,7 +161,7 @@ public class MainActivity extends AppCompatActivity
             case  R.id.favorite1:
             {
                 nowDB="favorite1";
-               // item.setTitle("aaa");
+                // item.setTitle("aaa");
                 break;
             }
             case  R.id.favorite2:

@@ -71,7 +71,7 @@ public class DatacheckActivity extends AppCompatActivity {
                 String numStr2 = String.valueOf(global_id);
                 MainActivity.db.delete(MainActivity.nowDB,"_id=?", new String[] {numStr2});
 
-                //로오딩
+                //로딩
                 MainActivity.helper = new DBHelper(DatacheckActivity.this,MainActivity.nowDB+".db",null,1);
                 Cursor c = MainActivity.db.query(MainActivity.nowDB,null,null,null,null,null,null,null);
                 MainActivity.adapter = new SimpleCursorAdapter(DatacheckActivity.this, android.R.layout.simple_list_item_2, c,

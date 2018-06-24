@@ -67,8 +67,6 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
                 values.put("latitude", MapActivity.Glatitude);
                 values.put("longtitude", MapActivity.Glongtitude);
 
-                Log.v("addlocation", "value에 넣기");
-
                 MainActivity.db.insert(MainActivity.nowDB, null, values);
 
 
@@ -79,9 +77,6 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
                         new String[]{"content", "address"}, new int[]{android.R.id.text1, android.R.id.text2}, 0);
 
                 MainActivity.list.setAdapter(MainActivity.adapter);
-
-                //Log.v("location", (String) values.get("latitude"));
-                //  Log.v("addlocation","세팅도 됨");
 
                 Toast.makeText(this, String.valueOf(SchedultText.getText()) + "저장됨", Toast.LENGTH_SHORT).show();
                 MapActivity.Glatitude = 0;
