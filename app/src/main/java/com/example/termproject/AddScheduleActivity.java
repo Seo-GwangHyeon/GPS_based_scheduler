@@ -2,15 +2,21 @@ package com.example.termproject;
 
 
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.*;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -18,6 +24,7 @@ import android.view.View;
 import android.widget.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AddScheduleActivity extends AppCompatActivity  implements Button.OnClickListener
@@ -25,6 +32,13 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
     public Button SaveButton,CancelButton,AddLocationButton;
     public EditText SchedultText;
     int address_used;
+    int i=0;
+
+
+    LocationManager locationManager;
+    static public ArrayList<PendingIntent> pendingList =new ArrayList<PendingIntent>();
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_add);
@@ -62,12 +76,25 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
 
                 ContentValues values = new ContentValues();
                 values.put("content", String.valueOf(SchedultText.getText()));
-
                 values.put("address", address);
                 values.put("latitude", MapActivity.Glatitude);
                 values.put("longtitude", MapActivity.Glongtitude);
 
                 Log.v("addlocation", "value에 넣기");
+
+                // 근접 경보용------------------
+
+                locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                PendingIntent intent1 = register(i,MapActivity.Glatitude,MapActivity.Glongtitude,String.valueOf(SchedultText.getText()),address,200,-1);
+                i++;
+
+
+                if(intent1!=null){
+                    pendingList.add(intent1);
+                }
+
+                //---------------------
 
                 MainActivity.db.insert(MainActivity.nowDB, null, values);
 
@@ -106,5 +133,48 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
         }
         return;
     }
+    private PendingIntent register(int id, double latitude, double longtitude, String content,String address, float radius
+            , long expiration) {
+
+        Intent intent = new Intent("proximityAlert");
+        intent.putExtra("id", id);
+        intent.putExtra("latitude", latitude);
+        intent.putExtra("longtitude", longtitude);
+        intent.putExtra("content", content);
+        intent.putExtra("address",address);
+
+
+        //인텐트 대기
+        //조건에 맞을 때 실행
+        // 여기서는 근접했을 때 실행
+        //PendingIntent.FLAG_CANCEL_CURRENT 은 현재 등록된 것이 있으면 등록된것을
+        //취소하고 현재 이것을 실행
+        //조건이 맞으면 내가 받겠다.
+        PendingIntent pendingIntent = PendingIntent.
+                getBroadcast(this, id, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return null;
+        }
+        locationManager.addProximityAlert(latitude, longtitude, radius, expiration, pendingIntent);
+
+
+        return pendingIntent;
+    }
+
+
+
+
+
 
 }

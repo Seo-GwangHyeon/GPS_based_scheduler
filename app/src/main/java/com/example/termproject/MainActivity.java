@@ -1,11 +1,16 @@
 package com.example.termproject;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -16,6 +21,7 @@ import android.support.design.internal.NavigationMenu;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.*;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -39,6 +45,33 @@ public class MainActivity extends AppCompatActivity
     public static String nowDB;// 현재 참조 데이터 베이스
     public static MenuItem[] items;
     private Menu baseMenu;
+    public static MainActivity instance;
+
+    public void NotificationS(String address,String content){
+        Bitmap mLargeIconForNo=
+                BitmapFactory.decodeResource(getResources(),R.drawable.ic_stat_name);
+
+        PendingIntent contentIntent = PendingIntent.getActivity(MainActivity.this,0,
+                new Intent(getApplicationContext(),MainActivity.class),PendingIntent.FLAG_UPDATE_CURRENT);
+
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(MainActivity.this)
+                        .setSmallIcon(R.drawable.ic_stat_name)
+                        .setContentTitle(address)
+                        .setContentText(content)
+                        .setTicker(content)
+                        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                        .setLargeIcon(mLargeIconForNo)
+                        .setAutoCancel(true)
+                        .setDefaults(Notification.DEFAULT_ALL)
+                        .setContentIntent(contentIntent);
+
+        NotificationManager nm = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        nm.notify(1234,builder.build());
+
+    }
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);

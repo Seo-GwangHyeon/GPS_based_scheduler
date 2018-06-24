@@ -4,7 +4,6 @@
     package="com.example.termproject">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -22,7 +21,7 @@
         <!-- 배포용 KEY -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyB5VrU_shQlHpyYL7vxH0jbjyxR1EzcyDE" />
+            android:value="AIzaSyC-t574e20pWI44lyI8J6B1DJ5gMd6c-xE" />
 
         <activity
             android:name=".MainActivity"
@@ -37,7 +36,8 @@
         <activity
             android:name=".SettingActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar2"></activity>
+            android:theme="@style/AppTheme.NoActionBar2" >
+        </activity>
         <activity
             android:name=".AddScheduleActivity"
             android:label="@string/app_name"
@@ -49,7 +49,8 @@
         <activity
             android:name=".RewriteActivity"
             android:label="위치 기반 스케줄러"
-            android:theme="@style/AppTheme.NoActionBar2"></activity>
+            android:theme="@style/AppTheme.NoActionBar2" >
+        </activity>
         <activity
             android:name=".MapActivity"
             android:label="위치 기반 스케줄러">
@@ -60,19 +61,23 @@
         <activity
             android:name=".SelHowLocPopupActivity"
             android:label="장소 추가"
-            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"></activity>
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" >
+        </activity>
         <activity
             android:name=".RangePopupActivity"
             android:label="범위 지정"
-            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"></activity>
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" >
+        </activity>
         <activity
             android:name=".SelectFavoriteActivity"
             android:label="자주찾는 장소 설정"
-            android:theme="@style/AppTheme.NoActionBar2"></activity>
+            android:theme="@style/AppTheme.NoActionBar2">
+        </activity>
         <activity
             android:name=".SelFavorPlacenamePopup"
             android:label="자주찾는 장소 이름 수정"
-            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert"></activity>
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" >
+        </activity>
         <activity
             android:name=".SelFavorPlaceAddrPopup"
             android:label="자주찾는 장소 주소 수정"
@@ -92,6 +97,19 @@
             android:name=".WidgetService"
             android:exported="false"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
+
+            android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" >
+
+        <receiver android:name=".LocationReceiver">
+            <intent-filter>
+                <action android:name="proximityAlert">
+
+
+                </action>
+            </intent-filter>
+        </receiver>
+
+
     </application>
 
 </manifest>
