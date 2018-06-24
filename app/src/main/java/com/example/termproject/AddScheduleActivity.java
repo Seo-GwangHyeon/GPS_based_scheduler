@@ -76,6 +76,7 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
 
                 ContentValues values = new ContentValues();
                 values.put("content", String.valueOf(SchedultText.getText()));
+
                 values.put("address", address);
                 values.put("latitude", MapActivity.Glatitude);
                 values.put("longtitude", MapActivity.Glongtitude);

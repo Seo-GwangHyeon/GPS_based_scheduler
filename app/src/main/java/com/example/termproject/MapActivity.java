@@ -54,7 +54,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
     MarkerOptions optFirst;
     int mark_count;
     EditText AddressInput;
-    Button SearchButton;
+ //   Button SearchButton;
     int gpsEnable;
     Marker temp;
 
@@ -71,7 +71,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         LocationInputBtn = (Button) findViewById(R.id.location_input_button);
         LocationInputBtn.setOnClickListener(this);
         AddressInput = (EditText) findViewById(R.id.address_text);
-        SearchButton = (Button) findViewById(R.id.search_button);
+        //SearchButton = (Button) findViewById(R.id.search_button);
         mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.map);
 
@@ -82,8 +82,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         gpsListener = new GPSListener();
         manager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         startLocationService();
-
-
 
         AddressInput.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -319,61 +317,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
 
-        SearchButton.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-
-                String str = AddressInput.getText().toString();
-                List<Address> addressList = null;
-                try {
-                    // editText에 입력한 텍스트(주소, 지역, 장소 등)을 지오 코딩을 이용해 변환
-                    addressList = geocoder.getFromLocationName(
-                            str, // 주소
-                            10); // 최대 검색 결과 개수
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                if(!addressList.isEmpty())
-                {
-                    Address a = addressList.get(0);
-                    String[] splitStr = a.toString().split(",");
-                    int countCountry = a.getCountryName().length();
-                    //Toast.makeText(this, countCountry, Toast.LENGTH_SHORT).show();
-                    Gaddress = splitStr[0].substring(splitStr[0].indexOf("\"") + countCountry + 2, splitStr[0].length() - 2); // 주소
-                    String feature = a.getFeatureName();
-
-
-                    String latitude = splitStr[10].substring(splitStr[10].indexOf("=") + 1); // 위도
-                    String longitude = splitStr[12].substring(splitStr[12].indexOf("=") + 1); // 경도
-
-                    // 좌표(위도, 경도) 생성
-                    LatLng point = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
-                    Glatitude = point.latitude;
-                    Glongtitude = point.longitude;
-                    // 마커 생성
-                    MarkerOptions mOptions2 = new MarkerOptions();
-                    mOptions2.title(feature);
-                    mOptions2.snippet(Gaddress);
-                    mOptions2.position(point);
-                    // 마커 추가
-                    // googleMap.clear();
-                    temp.remove();
-                    optFirst = mOptions2;
-                    optFirst.draggable(true);
-
-                    temp = googleMap.addMarker(optFirst);
-                    temp.showInfoWindow();
-                    // 해당 좌표로 화면 줌
-                    googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(point, 15));
-                }
-                else
-                {//결과가 없을경우
-                    Toast.makeText(MapActivity.this, "검색결과가 없습니다.", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
 
 
     }
