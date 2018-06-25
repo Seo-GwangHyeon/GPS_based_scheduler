@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/if_pin_1055010"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
@@ -21,7 +21,7 @@
         <!-- 배포용 KEY -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyC-t574e20pWI44lyI8J6B1DJ5gMd6c-xE" />
+            android:value="AIzaSyDi0D240NXXugDdT4JJ_oywCfo6V-CusZ8" />
 
         <activity
             android:name=".MainActivity"
@@ -29,7 +29,6 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -96,7 +95,8 @@
         <service
             android:name=".WidgetService"
             android:exported="false"
-            android:permission="android.permission.BIND_REMOTEVIEWS" />
+            android:permission="android.permission.BIND_REMOTEVIEWS"
+            />
 
             android:theme="@style/Theme.AppCompat.DayNight.Dialog.Alert" >
 

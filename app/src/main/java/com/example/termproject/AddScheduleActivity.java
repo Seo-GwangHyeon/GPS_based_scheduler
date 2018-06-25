@@ -54,11 +54,176 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
         SchedultText=(EditText) findViewById(R.id.add_schedule);
         AddLocationButton=(Button) findViewById(R.id.add_location);
 
+        if(!MainActivity.nowDB.equals("schedule"))
+            AddLocationButton.setEnabled(false);
+
         SaveButton.setOnClickListener(this);
         CancelButton.setOnClickListener(this);
         AddLocationButton.setOnClickListener(this);
     }
 
+    public void onClick(View view) {
+        // TextView textView1 = (TextView) findViewById(R.id.schedule_add_layout);
+        if(MainActivity.nowDB == "schedule"){
+            switch (view.getId())
+            {
+                case R.id.save : {  //저장부분
+                    MainActivity.db = MainActivity.helper.getWritableDatabase();
+
+                    String address = " ";
+                    if (address_used == 1) {
+
+                        address = MapActivity.Gaddress;
+                    }
+                    else
+                        address=" ";
+
+                    ContentValues values = new ContentValues();
+                    values.put("content", String.valueOf(SchedultText.getText()));
+
+                    values.put("address", address);
+                    values.put("latitude", MapActivity.Glatitude);
+                    values.put("longtitude", MapActivity.Glongtitude);
+
+                    Log.v("addlocation", "value에 넣기");
+
+                    // 근접 경보용------------------
+
+                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                    PendingIntent intent1 = register(i,MapActivity.Glatitude,MapActivity.Glongtitude,String.valueOf(SchedultText.getText()),address,200,-1);
+                    i++;
+
+
+                    if(intent1!=null){
+                        pendingList.add(intent1);
+                    }
+
+                    //---------------------
+
+                    MainActivity.db.insert(MainActivity.nowDB, null, values);
+
+
+                    //세팅부
+                    MainActivity.helper = new DBHelper(AddScheduleActivity.this, MainActivity.nowDB+".db", null, 1);
+                    Cursor c = MainActivity.db.query(MainActivity.nowDB, null, null, null, null, null, null, null);
+                    MainActivity.adapter = new SimpleCursorAdapter(AddScheduleActivity.this, android.R.layout.simple_list_item_2, c,
+                            new String[]{"content", "address"}, new int[]{android.R.id.text1, android.R.id.text2}, 0);
+
+                    MainActivity.list.setAdapter(MainActivity.adapter);
+
+                    //Log.v("location", (String) values.get("latitude"));
+                    //  Log.v("addlocation","세팅도 됨");
+
+                    Toast.makeText(this, String.valueOf(SchedultText.getText()) + "저장됨", Toast.LENGTH_SHORT).show();
+                    MapActivity.Glatitude = 0;
+                    MapActivity.Glongtitude = 0;
+                    finish();
+                    break;
+                }
+                case R.id.cancel :
+
+                    finish();
+                    break ;
+                case R.id.add_location :
+                    address_used=1;
+                    Intent intent = new Intent(AddScheduleActivity.this, SelHowLocPopupActivity.class);
+                    startActivity(intent);
+                    break;
+                default:
+                    Toast.makeText(this, "나머지", Toast.LENGTH_SHORT).show();
+                    finish();
+                    break;
+
+            }
+        }
+        else{
+            switch (view.getId())
+            {
+                case R.id.save : {  //저장부분
+                    MainActivity.db = MainActivity.helper.getWritableDatabase();
+
+
+                    String address = " ";
+                    /*
+                    if (address_used == 1) {
+
+                        address = MapActivity.Gaddress;
+                    }
+                    else
+                        address=" ";
+                    */
+
+                    ContentValues values = new ContentValues();
+                    values.put("content", String.valueOf(SchedultText.getText()));
+
+                    if(MainActivity.nowDB.equals("favorite1")){
+                        address = setAdd(1);
+                    }
+                    else if(MainActivity.nowDB.equals("favorite2")){
+                        address = setAdd(2);
+                    }
+                    else
+                        address = setAdd(3);
+
+                    values.put("address", address);
+                    values.put("latitude", MapActivity.Glatitude);
+                    values.put("longtitude", MapActivity.Glongtitude);
+
+                    Log.v("addlocation", "value에 넣기");
+
+                    // 근접 경보용------------------
+
+                    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+
+                    PendingIntent intent1 = register(i,MapActivity.Glatitude,MapActivity.Glongtitude,String.valueOf(SchedultText.getText()),address,200,-1);
+                    i++;
+
+
+                    if(intent1!=null){
+                        pendingList.add(intent1);
+                    }
+
+                    //---------------------
+
+                    MainActivity.db.insert(MainActivity.nowDB, null, values);
+
+
+                    //세팅부
+                    MainActivity.helper = new DBHelper(AddScheduleActivity.this, MainActivity.nowDB+".db", null, 1);
+                    Cursor c = MainActivity.db.query(MainActivity.nowDB, null, null, null, null, null, null, null);
+                    MainActivity.adapter = new SimpleCursorAdapter(AddScheduleActivity.this, android.R.layout.simple_list_item_2, c,
+                            new String[]{"content", "address"}, new int[]{android.R.id.text1, android.R.id.text2}, 0);
+
+                    MainActivity.list.setAdapter(MainActivity.adapter);
+
+                    //Log.v("location", (String) values.get("latitude"));
+                    //  Log.v("addlocation","세팅도 됨");
+
+                    Toast.makeText(this, String.valueOf(SchedultText.getText()) + "저장됨", Toast.LENGTH_SHORT).show();
+                    MapActivity.Glatitude = 0;
+                    MapActivity.Glongtitude = 0;
+                    finish();
+                    break;
+                }
+                case R.id.cancel :
+
+                    finish();
+                    break ;
+                case R.id.add_location :
+
+                    break;
+                default:
+                    Toast.makeText(this, "나머지", Toast.LENGTH_SHORT).show();
+                    finish();
+                    break;
+
+            }
+        }
+        return;
+    }
+
+    /*
     public void onClick(View view) {
         // TextView textView1 = (TextView) findViewById(R.id.schedule_add_layout);
         switch (view.getId())
@@ -134,6 +299,8 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
         }
         return;
     }
+    */
+
     private PendingIntent register(int id, double latitude, double longtitude, String content,String address, float radius
             , long expiration) {
 
@@ -173,7 +340,14 @@ public class AddScheduleActivity extends AppCompatActivity  implements Button.On
         return pendingIntent;
     }
 
-
+    String setAdd(int a){
+        String numStr2 = String.valueOf(a);
+        String[] args = new String[] {numStr2};
+        Cursor c = MainActivity.db.rawQuery("select address from favorites where _id = ?",args);
+        c.moveToNext();
+        String add =c.getString(0);
+        return add;
+    }
 
 
 

@@ -1,12 +1,17 @@
 package com.example.termproject;
 
 import android.app.LauncherActivity;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
+import android.provider.ContactsContract;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -36,16 +41,17 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory{
     }
 
     @Override
-    public void onCreate() {
-    }
-
-    @Override
     public void onDestroy() {
     }
 
     @Override
     public int getCount() {
         return MainActivity.list.getCount();
+    }
+
+    @Override
+    public void onCreate() {
+
     }
 
     @Override
@@ -66,9 +72,11 @@ class StackRemoteViewsFactory implements RemoteViewsService.RemoteViewsFactory{
 
         remoteViews.setTextViewText(R.id.widget_item,content);
 
-        //Intent fillIntent = new Intent();
-        //fillIntent.setData(Uri.parse("http://www.example.com" + position));
-        //remoteViews.setOnClickFillInIntent(R.id.widget_item,fillIntent);
+        /*
+        Intent fillIntent = new Intent();
+        fillIntent.setData(Uri.parse("http://www.google.com"));
+        remoteViews.setOnClickFillInIntent(R.id.widget_item,fillIntent);
+        */
 
         return remoteViews;
     }

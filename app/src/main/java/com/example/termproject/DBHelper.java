@@ -54,21 +54,21 @@ public class DBHelper extends SQLiteOpenHelper {
         ContentValues values = new ContentValues();
         values.put("_id", 1);
         values.put("placename", "자주찾는장소1");
-        values.put("address", "없음1");
+        values.put("address", "");
         values.put("latitude", 0);
         values.put("longtitude", 0);
         db.insert("favorites", null, values);
 
         values.put("_id", 2);
         values.put("placename", "자주찾는장소2");
-        values.put("address", "없음2");
+        values.put("address", "");
         values.put("latitude", 0);
         values.put("longtitude", 0);
         db.insert("favorites", null, values);
 
         values.put("_id", 3);
         values.put("placename", "자주찾는장소3");
-        values.put("address", "없음3");
+        values.put("address", "");
         values.put("latitude", 0);
         values.put("longtitude", 0);
         db.insert("favorites", null, values);

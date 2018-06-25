@@ -76,6 +76,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        //setTitle("haha");
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -136,6 +137,7 @@ public class MainActivity extends AppCompatActivity
     public void onResume() {
         super.onResume();
 
+
         setPlaceName(1);
         setPlaceName(2);
         setPlaceName(3);
@@ -187,24 +189,26 @@ public class MainActivity extends AppCompatActivity
             case  R.id.home:
             {
                 nowDB="schedule";
-
+                setTitle("위치 기반 메모장");
                 break;
             }
 
             case  R.id.favorite1:
             {
                 nowDB="favorite1";
-                // item.setTitle("aaa");
+                set_Title(1);
                 break;
             }
             case  R.id.favorite2:
             {
                 nowDB="favorite2";
+                set_Title(2);
                 break;
             }
             case  R.id.favorite3:
             {
                 nowDB="favorite3";
+                set_Title(3);
                 break;
             }
             case  R.id.favorite_manage:
@@ -240,8 +244,6 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-
-
     void setPlaceName(int a)
     {
         String numStr2 = String.valueOf(a);
@@ -250,5 +252,14 @@ public class MainActivity extends AppCompatActivity
         c.moveToNext();
         String name =c.getString(0);
         items[a].setTitle(name);
+    }
+
+    void set_Title(int a){
+        String numStr2 = String.valueOf(a);
+        String[] args = new String[] {numStr2};
+        Cursor c = MainActivity.db.rawQuery("select placename from favorites where _id = ?",args);
+        c.moveToNext();
+        String name =c.getString(0);
+        setTitle(name);
     }
 }

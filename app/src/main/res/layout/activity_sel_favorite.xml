@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:id="@+id/favorite_address1_button"
-            android:text="수정"
+            android:text="주소 수정"
             />
     </TableRow>
 
@@ -95,7 +95,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:id="@+id/favorite_address2_button"
-            android:text="수정"
+            android:text="주소 수정"
             />
     </TableRow>
 
@@ -141,7 +141,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             android:id="@+id/favorite_address3_button"
-            android:text="수정"
+            android:text="주소 수정"
             />
     </TableRow>
 

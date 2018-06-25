@@ -22,40 +22,18 @@ import java.util.logging.LogRecord;
 
 
 public class WidgetProvider extends AppWidgetProvider {
-    /*
-    public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
-        for(int i=0; i<appWidgetIds.length; ++i){
-            RemoteViews remoteViews = updateWidgetListView(context, appWidgetIds[i]);
-            appWidgetManager.updateAppWidget(appWidgetIds[i],remoteViews);
-        }
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
-    }
-
-    private RemoteViews updateWidgetListView(Context context, int appWidgetId){
-        RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_provider);
-        Intent svcIntent = new Intent(context, WidgetService.class);
-        //svcIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID,appWidgetId);
-        //svcIntent.setData(Uri.parse(svcIntent.toUri(Intent.URI_INTENT_SCHEME)));
-        remoteViews.setRemoteAdapter(R.id.list_view,svcIntent);
-        //remoteViews.setRemoteAdapter(appWidgetId, R.id.list_view,svcIntent);
-        remoteViews.setEmptyView(R.id.list_view,R.id.empty_view);
-
-        return remoteViews;
-    }
-    */
     @Override
     public void onReceive(Context context, Intent intent){
         super.onReceive(context,intent);
     }
 
     public void onUpdate(Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds){
-
-
-        for(int i=0; i<appWidgetIds.length; i++){
+        super.onUpdate(context, appWidgetManager, appWidgetIds);
+        for(int i=0; i<appWidgetIds.length; ++i){
             RemoteViews remoteViews = new RemoteViews(context.getPackageName(), R.layout.widget_provider);
             Intent intent = new Intent(context,WidgetService.class);
-            remoteViews.setRemoteAdapter(R.id.list_view,intent);
-            //remoteViews.setRemoteAdapter(appWidgetIds[i],R.id.list_view,intent);
+            //remoteViews.setRemoteAdapter(R.id.list_view,intent);
+            remoteViews.setRemoteAdapter(appWidgetIds[i],R.id.list_view,intent);
             remoteViews.setEmptyView(R.id.list_view,R.id.empty_view);
 
             Intent itemIntent = new Intent(Intent.ACTION_VIEW);
@@ -67,9 +45,7 @@ public class WidgetProvider extends AppWidgetProvider {
             appWidgetIds = appWidgetManager.getAppWidgetIds(new ComponentName(context,getClass()));
 
             appWidgetManager.updateAppWidget(appWidgetIds[i],remoteViews);
-
         }
-        super.onUpdate(context, appWidgetManager, appWidgetIds);
     }
 
     @Override
